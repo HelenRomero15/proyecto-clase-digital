@@ -1,0 +1,85 @@
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f5fa;
+  color: #273449;
+}
+
+.contenedor {
+  width: min(900px, 92%);
+  margin: 35px auto;
+}
+
+.header-clase {
+  padding: 30px;
+  background: #dce9ff;
+  border-radius: 16px;
+  margin-bottom: 22px;
+}
+
+.etiqueta {
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.header-clase h1 {
+  margin-bottom: 10px;
+}
+
+.objetivos-card,
+.actividades {
+  padding: 24px;
+  margin-bottom: 22px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 3px 12px #0000000d;
+}
+
+.objetivos-card h2,
+.actividades h2 {
+  color: #365d9d;
+}
+
+.actividad-item {
+  padding: 15px;
+  margin-top: 12px;
+  border: 1px solid #dce2ed;
+  border-radius: 10px;
+  background: #fafbff;
+}
+
+.actividad-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.actividad-label input {
+  width: 18px;
+  height: 18px;
+}
+
+.completada {
+  text-decoration: line-through;
+  color: #568265;
+}
+
+.estado-actividad {
+  font-size: 13px;
+  color: #667085;
+  margin-bottom: 0;
+}
+
+footer {
+  text-align: center;
+  padding: 18px;
+  color: #667085;
+  font-size: 13px;
+}
