@@ -23,3 +23,5 @@ Thumbs.db
 
 # Configuración local de editores
 .vscode/
+.vercel/
+.vercel

@@ -1,140 +1,144 @@
 
-import { useState, useEffect } from "react";
-import "./ListaActividades.css";
+import { useEffect, useState } from "react";
 
 function ListaActividades() {
+
+  // Estados del componente
   const [actividades, setActividades] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
 
+  // Obtener los registros de NocoDB
   useEffect(() => {
-    const controlador = new AbortController();
 
-    async function obtenerActividades() {
-      try {
-        setCargando(true);
-        setError("");
+    fetch("/api/actividades")
 
-        const respuesta = await fetch(
-          import.meta.env.VITE_NOCODB_URL,
-          {
-            method: "GET",
-            headers: {
-              "xc-token": import.meta.env.VITE_NOCODB_TOKEN,
-              "Content-Type": "application/json"
-            },
-            signal: controlador.signal
-          }
-        );
+      .then((respuesta) => {
 
         if (!respuesta.ok) {
           throw new Error(
-            `Error HTTP: ${respuesta.status}`
+            "No fue posible obtener las actividades"
           );
         }
 
-        const datos = await respuesta.json();
+        return respuesta.json();
 
-        const registros = datos.list || datos.records || [];
+      })
 
-        setActividades(registros);
+      .then((datos) => {
 
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          console.error("Error al conectar con NocoDB:", error);
-          setError(error.message);
-        }
-      } finally {
-        if (!controlador.signal.aborted) {
-          setCargando(false);
-        }
-      }
-    }
+        // Identificar la lista de registros
+        const registros = Array.isArray(datos.list)
+          ? datos.list
+          : Array.isArray(datos.records)
+          ? datos.records
+          : Array.isArray(datos)
+          ? datos
+          : [];
 
-    obtenerActividades();
+        // Extraer y organizar los campos
+        const actividadesFormateadas = registros.map(
+          (registro) => {
 
-    return () => controlador.abort();
+            const fields = registro.fields ?? registro;
+
+            return {
+              id: registro.Id ?? registro.id,
+              titulo: fields.Title ?? "Sin título",
+              duracion: fields["Duración"] ?? "Sin duración",
+              completado: fields.Completado ?? "Sin estado",
+              categoria: fields.Categoria ?? "Sin categoría"
+            };
+
+          }
+        );
+
+        setActividades(actividadesFormateadas);
+
+      })
+
+      .catch((error) => {
+
+        console.error("Error al cargar actividades:", error);
+
+        setError(
+          "No fue posible conectar con NocoDB."
+        );
+
+      })
+
+      .finally(() => {
+
+        setCargando(false);
+
+      });
 
   }, []);
 
+  // Mensaje de carga
   if (cargando) {
-    return (
-      <p className="mensaje-carga">
-        Cargando actividades...
-      </p>
-    );
+    return <p>Cargando actividades...</p>;
   }
 
+  // Mensaje de error
   if (error) {
     return (
       <p className="mensaje-error">
-        No se pudieron cargar las actividades: {error}
+        {error}
       </p>
     );
   }
 
+  // Mostrar las actividades
   return (
+
     <section className="lista-actividades">
 
       <h2>Actividades de aprendizaje</h2>
 
-      <p className="subtitulo">
-        Actividades obtenidas desde NocoDB
-      </p>
-
       {actividades.length === 0 ? (
+
         <p>No hay actividades registradas.</p>
+
       ) : (
 
-        <div className="contenedor-actividades">
+        <div className="actividades-grid">
 
-          {actividades.map((item, indice) => {
+          {actividades.map((actividad, index) => (
 
-            const actividad = item.fields || item;
+            <article
+              className="actividad-card"
+              key={actividad.id ?? index}
+            >
 
-            return (
-              <article
-                className="tarjeta-actividad"
-                key={item.Id || item.id || indice}
-              >
+              <h3>{actividad.titulo}</h3>
 
-                <h3>
-                  {actividad.Title || "Sin título"}
-                </h3>
+              <p>
+                <strong>Duración:</strong>{" "}
+                {actividad.duracion}
+              </p>
 
-                <p>
-                  <strong>Duración:</strong>{" "}
-                  {actividad["Duración"] || "No especificada"}
-                </p>
+              <p>
+                <strong>Categoría:</strong>{" "}
+                {actividad.categoria}
+              </p>
 
-                <p>
-                  <strong>Categoría:</strong>{" "}
-                  {actividad.Categoria || "Sin categoría"}
-                </p>
+              <span className="estado">
+                {String(actividad.completado)}
+              </span>
 
-                <span
-                  className={
-                    actividad.Completado
-                      ? "estado completado"
-                      : "estado pendiente"
-                  }
-                >
-                  {actividad.Completado
-                    ? "Completado"
-                    : "Pendiente"}
-                </span>
+            </article>
 
-              </article>
-            );
-
-          })}
+          ))}
 
         </div>
 
       )}
 
     </section>
+
   );
+
 }
 
 export default ListaActividades;
