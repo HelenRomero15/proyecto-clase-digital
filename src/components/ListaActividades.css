@@ -1,0 +1,82 @@
+
+.lista-actividades {
+  width: 90%;
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 15px;
+}
+
+.lista-actividades h2 {
+  color: #334155;
+  font-size: 25px;
+  margin-bottom: 8px;
+}
+
+.subtitulo {
+  color: #64748b;
+  margin-bottom: 25px;
+}
+
+.contenedor-actividades {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(220px, 1fr)
+  );
+  gap: 18px;
+}
+
+.tarjeta-actividad {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.2s ease;
+}
+
+.tarjeta-actividad:hover {
+  transform: translateY(-3px);
+}
+
+.tarjeta-actividad h3 {
+  color: #475569;
+  margin-bottom: 15px;
+}
+
+.tarjeta-actividad p {
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+.estado {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.completado {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.pendiente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.mensaje-carga {
+  text-align: center;
+  padding: 20px;
+  color: #475569;
+}
+
+.mensaje-error {
+  color: #b91c1c;
+  background: #fee2e2;
+  padding: 15px;
+  border-radius: 10px;
+}
