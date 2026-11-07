@@ -1,22 +1,56 @@
 
 import ListaActividades from "./components/ListaActividades";
-import "./App.css";
+import HeaderClase from "./components/HeaderClase";
+import ObjetivosCard from "./components/ObjetivosCard";
+import ActividadItem from "./components/ActividadItem";
+import "./index.css";
 
 function App() {
+  const indicadores = [
+    "Identifica la estructura de un componente en React.",
+    "Utiliza props para enviar información.",
+    "Implementa useState para actualizar una actividad."
+  ];
+
+  const actividades = [
+    "Leer el ejemplo de componentes.",
+    "Identificar las props del encabezado.",
+    "Marcar la actividad cuando esté terminada."
+  ];
+
   return (
     <main className="contenedor">
-      <header className="encabezado">
-        <h1>Plan de Clase Digital</h1>
-        <p>
-          Sistema de gestión de actividades de aprendizaje
-        </p>
-      </header>
 
+      <HeaderClase
+        titulo="Mi primera clase con React"
+        curso="Tecnología"
+        grado="Primero Básico"
+      />
+
+      {/* Actividades obtenidas desde NocoDB */}
       <ListaActividades />
 
+      <ObjetivosCard
+        competencia="Construye interfaces digitales mediante componentes reutilizables e interactivos."
+        indicadores={indicadores}
+      />
+
+      <section className="actividades">
+        <h2>Actividades de aprendizaje</h2>
+        <p>Marca cada actividad cuando la hayas terminado.</p>
+
+        {actividades.map((actividad, index) => (
+          <ActividadItem
+            key={index}
+            actividad={actividad}
+          />
+        ))}
+      </section>
+
       <footer>
-        <p>Proyecto educativo desarrollado con React y NocoDB</p>
+        Proyecto Integrador · Fase 7 · React y NocoDB
       </footer>
+
     </main>
   );
 }

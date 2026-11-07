@@ -1,5 +1,6 @@
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import "./ListaActividades.css";
 
 function ListaActividades() {
   const [actividades, setActividades] = useState([]);
@@ -7,76 +8,131 @@ function ListaActividades() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/actividades")
-      .then((respuesta) => {
-        if (!respuesta.ok) {
-          throw new Error("No se pudieron cargar los datos");
-        }
+    const controlador = new AbortController();
 
-        return respuesta.json();
-      })
-      .then((datos) => {
-        const registros = datos.list || datos.records || [];
+    async function obtenerActividades() {
+      try {
+        setCargando(true);
+        setError("");
 
-        const actividadesFormateadas = registros.map(
-          (registro) => {
-            const fields = registro.fields ?? registro;
-
-            return {
-              id: registro.Id ?? registro.id,
-              actividad:
-                fields.Actividad ?? "Sin actividad",
-              descripcion:
-                fields.Descripcion ?? "Sin descripción",
-              estado:
-                fields.Estado ?? "Sin estado"
-            };
+        const respuesta = await fetch(
+          import.meta.env.VITE_NOCODB_URL,
+          {
+            method: "GET",
+            headers: {
+              "xc-token": import.meta.env.VITE_NOCODB_TOKEN,
+              "Content-Type": "application/json"
+            },
+            signal: controlador.signal
           }
         );
 
-        setActividades(actividadesFormateadas);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setError("No fue posible conectar con NocoDB.");
-      })
-      .finally(() => {
-        setCargando(false);
-      });
+        if (!respuesta.ok) {
+          throw new Error(
+            `Error HTTP: ${respuesta.status}`
+          );
+        }
+
+        const datos = await respuesta.json();
+
+        const registros = datos.list || datos.records || [];
+
+        setActividades(registros);
+
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("Error al conectar con NocoDB:", error);
+          setError(error.message);
+        }
+      } finally {
+        if (!controlador.signal.aborted) {
+          setCargando(false);
+        }
+      }
+    }
+
+    obtenerActividades();
+
+    return () => controlador.abort();
+
   }, []);
 
   if (cargando) {
-    return <p>Cargando actividades...</p>;
+    return (
+      <p className="mensaje-carga">
+        Cargando actividades...
+      </p>
+    );
   }
 
   if (error) {
-    return <p className="mensaje-error">{error}</p>;
+    return (
+      <p className="mensaje-error">
+        No se pudieron cargar las actividades: {error}
+      </p>
+    );
   }
 
   return (
     <section className="lista-actividades">
+
       <h2>Actividades de aprendizaje</h2>
+
+      <p className="subtitulo">
+        Actividades obtenidas desde NocoDB
+      </p>
 
       {actividades.length === 0 ? (
         <p>No hay actividades registradas.</p>
       ) : (
-        <div className="actividades-grid">
-          {actividades.map((actividad, index) => (
-            <article
-              className="actividad-card"
-              key={actividad.id ?? index}
-            >
-              <h3>{actividad.actividad}</h3>
 
-              <p>{actividad.descripcion}</p>
+        <div className="contenedor-actividades">
 
-              <span className="estado">
-                {actividad.estado}
-              </span>
-            </article>
-          ))}
+          {actividades.map((item, indice) => {
+
+            const actividad = item.fields || item;
+
+            return (
+              <article
+                className="tarjeta-actividad"
+                key={item.Id || item.id || indice}
+              >
+
+                <h3>
+                  {actividad.Title || "Sin título"}
+                </h3>
+
+                <p>
+                  <strong>Duración:</strong>{" "}
+                  {actividad["Duración"] || "No especificada"}
+                </p>
+
+                <p>
+                  <strong>Categoría:</strong>{" "}
+                  {actividad.Categoria || "Sin categoría"}
+                </p>
+
+                <span
+                  className={
+                    actividad.Completado
+                      ? "estado completado"
+                      : "estado pendiente"
+                  }
+                >
+                  {actividad.Completado
+                    ? "Completado"
+                    : "Pendiente"}
+                </span>
+
+              </article>
+            );
+
+          })}
+
         </div>
+
       )}
+
     </section>
   );
 }
