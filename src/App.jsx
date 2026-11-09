@@ -22,7 +22,7 @@ function App() {
     <main className="contenedor">
 
       <HeaderClase
-        titulo="Mi primera clase con React"
+        titulo="Clase digital de Helen"
         curso="Tecnología"
         grado="Primero Básico"
       />
@@ -37,7 +37,9 @@ function App() {
 
       <section className="actividades">
         <h2>Actividades de aprendizaje</h2>
-        <p>Marca cada actividad cuando la hayas terminado.</p>
+        <p>
+          Marca cada actividad cuando la hayas terminado.
+        </p>
 
         {actividades.map((actividad, index) => (
           <ActividadItem
