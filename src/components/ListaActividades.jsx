@@ -1,4 +1,6 @@
+
 import { useEffect, useState } from "react";
+import { obtenerActividades } from "../services/api.js";
 
 function ListaActividades() {
   const [actividades, setActividades] = useState([]);
@@ -6,118 +8,66 @@ function ListaActividades() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const obtenerActividades = async () => {
+    async function cargarActividades() {
       try {
-        setCargando(true);
-        setError("");
-
-        const respuesta = await fetch("/api/actividades");
-
-        if (!respuesta.ok) {
-          throw new Error("No fue posible obtener las actividades");
-        }
-
-        const datos = await respuesta.json();
-
-        // Obtener los registros según la estructura de respuesta
-        const registros = Array.isArray(datos.list)
-          ? datos.list
-          : Array.isArray(datos.records)
-          ? datos.records
-          : Array.isArray(datos)
-          ? datos
-          : [];
-
-        // Adaptar los registros de NocoDB
-        const actividadesFormateadas = registros.map((registro) => {
-          const fields = registro.fields ?? registro;
-
-          const valorEstado = fields.Completado;
-
-          const completado =
-            valorEstado === true ||
-            valorEstado === "true" ||
-            valorEstado === 1 ||
-            valorEstado === "1";
-
-          return {
-            id: registro.Id ?? registro.id,
-            titulo: fields.Title ?? "Sin título",
-            duracion: fields["Duración"] ?? "Sin duración",
-            categoria: fields.Categoria ?? "Sin categoría",
-            completado
-          };
-        });
-
-        setActividades(actividadesFormateadas);
-
-      } catch (error) {
-        console.error("Error al cargar actividades:", error);
-        setError("No fue posible conectar con NocoDB.");
+        const datos = await obtenerActividades();
+        setActividades(datos);
+      } catch (err) {
+        console.error("Error:", err);
+        setError(err.message);
       } finally {
         setCargando(false);
       }
-    };
+    }
 
-    obtenerActividades();
+    cargarActividades();
   }, []);
 
   if (cargando) {
-    return (
-      <section className="lista-actividades">
-        <p className="mensaje-carga">Cargando actividades...</p>
-      </section>
-    );
+    return <p>Cargando actividades...</p>;
   }
 
   if (error) {
-    return (
-      <section className="lista-actividades">
-        <p className="mensaje-error">{error}</p>
-      </section>
-    );
+    return <p>{error}</p>;
   }
 
   return (
-    <section className="lista-actividades">
-      <h2>Actividades de aprendizaje</h2>
+    <section className="seccion-actividades">
+      <h2>Actividades registradas en NocoDB</h2>
 
-      <p className="subtitulo-actividades">
-        Consulta las actividades registradas en tu plan de clase.
+      <p>
+        Estas actividades se consultan directamente desde la base de datos.
       </p>
 
       {actividades.length === 0 ? (
-        <p className="mensaje-vacio">
-          No hay actividades registradas en este momento.
-        </p>
+        <p>No hay actividades registradas.</p>
       ) : (
-        <div className="actividades-grid">
-          {actividades.map((actividad, index) => (
+        <div className="lista-actividades">
+          {actividades.map((actividad) => (
             <article
-              className="actividad-card"
-              key={actividad.id ?? index}
+              className="tarjeta-actividad"
+              key={actividad.Id}
             >
-              <h3>{actividad.titulo}</h3>
+              <h3>{actividad.Title}</h3>
 
               <p>
-                <strong>Duración:</strong> {actividad.duracion}
+                <strong>Duración:</strong>{" "}
+                {actividad["Duración"]}
               </p>
 
               <p>
-                <strong>Categoría:</strong> {actividad.categoria}
+                <strong>Categoría:</strong>{" "}
+                {actividad.Categoria}
               </p>
 
-              <span
-                className={`estado ${
-                  actividad.completado
-                    ? "estado-completado"
-                    : "estado-pendiente"
-                }`}
-              >
-                {actividad.completado
-                  ? "Completado"
-                  : "Pendiente"}
-              </span>
+              <p>
+                <strong>Estado:</strong>{" "}
+                {actividad.Completado === true
+                  ? "Completada"
+                  : actividad.Completado === false
+                    ? "Pendiente"
+                    : "Sin especificar"}
+              </p>
             </article>
           ))}
         </div>

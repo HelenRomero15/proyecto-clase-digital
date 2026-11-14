@@ -1,51 +1,75 @@
+
+import dotenv from "dotenv";
+
+dotenv.config({
+  path: `${process.cwd()}/.env.local`,
+});
+
 export default async function handler(req, res) {
-  // Permitir únicamente solicitudes GET
   if (req.method !== "GET") {
     return res.status(405).json({
-      error: "Método no permitido"
+      error: "Método no permitido",
     });
   }
 
   try {
+    const urlBase = process.env.NOCODB_URL;
     const token = process.env.NOCODB_TOKEN;
+    const tableId = process.env.NOCODB_ACTIVIDADES_TABLE_ID;
 
-    if (!token) {
+    // Comprobar variables
+    if (!urlBase || !token || !tableId) {
       return res.status(500).json({
-        error: "No se encontró NOCODB_TOKEN en las variables de entorno"
+        error: "Faltan variables de conexión",
+        urlConfigurada: Boolean(urlBase),
+        tokenConfigurado: Boolean(token),
+        idTablaConfigurado: Boolean(tableId),
       });
     }
 
-    const respuesta = await fetch(
-      "https://app.nocodb.com/api/v2/tables/ml2jeto7wf6wl9l/records",
-      {
-        method: "GET",
-        headers: {
-          "xc-token": token,
-          "Content-Type": "application/json"
-        }
-      }
-    );
+    const url =
+      `${urlBase}/api/v2/tables/${tableId}/records?limit=100`;
+
+    const respuesta = await fetch(url, {
+      method: "GET",
+      headers: {
+        "xc-token": token,
+        "Content-Type": "application/json",
+      },
+    });
 
     const texto = await respuesta.text();
 
+    let data;
+
+    try {
+      data = JSON.parse(texto);
+    } catch {
+      data = { respuesta: texto };
+    }
+
     if (!respuesta.ok) {
-      console.error("Error de NocoDB:", respuesta.status, texto);
+      console.error("Error de NocoDB:", respuesta.status, data);
 
       return res.status(respuesta.status).json({
-        error: "NocoDB rechazó la solicitud",
-        status: respuesta.status
+        error: "NocoDB respondió con un error",
+        estado: respuesta.status,
+        detalle: data,
       });
     }
 
-    const datos = JSON.parse(texto);
+    const actividades = Array.isArray(data)
+      ? data
+      : data.list || data.records || [];
 
-    return res.status(200).json(datos);
+    return res.status(200).json(actividades);
 
   } catch (error) {
-    console.error("Error del servidor:", error);
+    console.error("Error al consultar actividades:", error);
 
     return res.status(500).json({
-      error: "Error interno al conectar con NocoDB"
+      error: "No fue posible consultar las actividades",
+      detalle: error.message,
     });
   }
 }

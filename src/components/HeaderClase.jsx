@@ -1,23 +1,32 @@
-
 import { motion } from "framer-motion";
 
 function HeaderClase() {
   return (
-    <motion.header
-      initial={{ opacity: 0, y: -30 }}
+    <motion.div
+      className="hero"
+      initial={{ opacity: 0, y: -25 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      style={{
-        background: "#dceafe",
-        padding: "24px",
-        borderRadius: "16px",
-        marginBottom: "24px",
-        textAlign: "center",
-      }}
+      transition={{ duration: 0.7 }}
     >
-      <h1>Plan de Clase Digital Interactivo</h1>
-      <p>Aprendemos tecnología de forma dinámica</p>
-    </motion.header>
+      <span className="etiqueta">CLASE DIGITAL INTERACTIVA</span>
+
+      <h1>¡Bienvenido a mi primera clase digital!</h1>
+
+      <p className="hero-descripcion">
+        Descubre cómo se crean las páginas web utilizando
+        HTML, CSS y JavaScript.
+      </p>
+
+      <div className="hero-datos">
+        <span>📚 Tecnología</span>
+        <span>🎓 Primero Básico</span>
+        <span>⏱️ 40 minutos</span>
+      </div>
+
+      <a href="#objetivos" className="boton-principal">
+        Comenzar la clase ↓
+      </a>
+    </motion.div>
   );
 }
 

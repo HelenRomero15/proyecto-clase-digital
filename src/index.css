@@ -1,184 +1,219 @@
 
-* {
-  box-sizing: border-box;
+/* =================================
+   NUEVO DISEÑO - CLASE DIGITAL
+================================= */
+
+:root {
+  --fondo: #f5f4fc;
+  --blanco: #ffffff;
+  --principal: #7772b8;
+  --principal-oscuro: #5e589d;
+  --lavanda: #eeecfb;
+  --azul: #e9f1fb;
+  --texto: #30344b;
+  --secundario: #777b91;
+  --borde: #e7e5f2;
+  --verde: #e5f5ed;
 }
 
 body {
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: "Segoe UI", Arial, sans-serif;
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f3f5fa;
-  color: #273449;
 }
+
+/* Contenedor general */
 
 .contenedor {
   width: 90%;
   max-width: 1100px;
-  margin: 0 auto;
-  padding: 30px 0;
+  margin: 35px auto;
 }
+
+/* Encabezados */
+
+h1, h2, h3 {
+  color: var(--texto);
+}
+
+h2 {
+  font-size: 25px;
+  margin-bottom: 10px;
+}
+
+p {
+  line-height: 1.6;
+}
+
+/* Encabezado principal */
 
 .encabezado {
-  background: #526b91;
+  background: linear-gradient(135deg, #7772b8, #9a96d1);
   color: white;
-  padding: 35px 20px;
+  padding: 35px 25px;
+  border-radius: 20px;
   text-align: center;
-  border-radius: 14px;
-  margin-bottom: 30px;
+  box-shadow: 0 8px 22px rgba(100, 91, 160, 0.15);
 }
 
-.encabezado h1 {
-  margin: 0 0 10px;
-}
-
+.encabezado h1,
+.encabezado h2,
 .encabezado p {
-  margin: 5px 0;
+  color: white;
 }
 
-/* Panel de actividades de NocoDB */
-.lista-actividades {
-  background: white;
+/* Secciones */
+
+.seccion-actividades,
+.seccion-evaluacion {
+  background: var(--blanco);
   padding: 28px;
-  border-radius: 14px;
-  margin-bottom: 30px;
-  box-shadow: 0 3px 12px #00000012;
+  margin: 28px 0;
+  border-radius: 20px;
+  border: 1px solid var(--borde);
+  box-shadow: 0 5px 18px rgba(54, 50, 100, 0.05);
 }
 
-.lista-actividades h2 {
-  text-align: center;
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: #344f73;
+.seccion-actividades > p,
+.seccion-evaluacion > p {
+  color: var(--secundario);
 }
 
-.subtitulo-actividades {
-  text-align: center;
-  color: #65738a;
-  margin-bottom: 25px;
-}
+/* Tarjetas de actividades */
 
-/* Cuadrícula de tarjetas */
-.actividades-grid {
+.lista-actividades {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+  margin-top: 22px;
 }
 
-/* Tarjetas individuales */
-.actividad-card {
-  background: #ffffff;
+.tarjeta-actividad {
+  background: #faf9ff;
+  border: 1px solid var(--borde);
+  border-top: 5px solid #9993d0;
   padding: 22px;
-  border-radius: 12px;
-  box-shadow: 0 3px 12px #00000012;
-  border-left: 5px solid #7896bd;
+  border-radius: 16px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.actividad-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px #00000018;
+.tarjeta-actividad:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(75, 69, 130, 0.10);
 }
 
-.actividad-card h3 {
-  color: #526b91;
+.tarjeta-actividad h3 {
+  color: var(--principal-oscuro);
+  font-size: 19px;
   margin-top: 0;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
-.actividad-card p {
-  color: #526075;
-  line-height: 1.5;
+.tarjeta-actividad p {
+  color: var(--secundario);
+  font-size: 14px;
   margin: 10px 0;
 }
 
-/* Estados */
-.estado {
-  display: inline-block;
-  padding: 7px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: bold;
-  margin-top: 10px;
+.tarjeta-actividad strong {
+  color: var(--texto);
 }
 
-.estado-completado {
-  background: #e2f4e8;
-  color: #237342;
+/* Formulario de evaluación */
+
+.seccion-evaluacion form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 22px;
 }
 
-.estado-pendiente {
-  background: #fff1d6;
-  color: #956000;
+.seccion-evaluacion label {
+  display: block;
+  font-weight: 600;
+  color: var(--texto);
+  margin-top: 12px;
+}
+
+.seccion-evaluacion input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 15px;
+  border: 1px solid var(--borde);
+  border-radius: 11px;
+  background: #fbfaff;
+  color: var(--texto);
+  font-size: 15px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.seccion-evaluacion input:focus {
+  border-color: var(--principal);
+  box-shadow: 0 0 0 3px rgba(119, 114, 184, 0.12);
+}
+
+/* Botones */
+
+.seccion-evaluacion button {
+  background: var(--principal);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 18px;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.seccion-evaluacion button:hover {
+  background: var(--principal-oscuro);
+  transform: translateY(-2px);
+}
+
+.seccion-evaluacion button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Mensajes */
-.mensaje-carga,
-.mensaje-vacio {
-  text-align: center;
-  color: #65738a;
-  padding: 15px;
+
+.mensaje-exito {
+  background: var(--verde);
+  color: #26734d;
+  border-radius: 10px;
+  padding: 13px;
+  font-weight: 600;
 }
 
 .mensaje-error {
-  color: #b42318;
-  text-align: center;
-  padding: 15px;
-}
-
-/* Objetivos */
-.objetivos-card {
-  background: white;
-  padding: 25px;
-  border-radius: 14px;
-  margin-bottom: 30px;
-  box-shadow: 0 3px 12px #00000012;
-}
-
-.objetivos-card h2 {
-  color: #526b91;
-}
-
-.objetivos-card li {
-  margin-bottom: 10px;
-  line-height: 1.5;
-}
-
-/* Actividades locales de React */
-.actividades {
-  background: white;
-  padding: 25px;
-  border-radius: 14px;
-  margin-bottom: 30px;
-  box-shadow: 0 3px 12px #00000012;
-}
-
-.actividades h2 {
-  color: #526b91;
-}
-
-/* Pie de página */
-footer {
-  text-align: center;
-  margin-top: 40px;
-  color: #65738a;
-  padding: 15px;
+  background: #fff0f0;
+  color: #b33b48;
+  border-radius: 10px;
+  padding: 13px;
 }
 
 /* Adaptación a celulares */
+
 @media (max-width: 600px) {
   .contenedor {
-    width: 94%;
-    padding: 20px 0;
+    width: 92%;
+    margin: 18px auto;
   }
 
   .encabezado {
-    padding: 25px 12px;
+    padding: 25px 16px;
+  }
+
+  .seccion-actividades,
+  .seccion-evaluacion {
+    padding: 20px 16px;
   }
 
   .lista-actividades {
-    padding: 20px;
-  }
-
-  .actividades-grid {
     grid-template-columns: 1fr;
   }
 }

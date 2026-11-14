@@ -1,59 +1,108 @@
+import { useEffect, useState } from "react";
 
-import ListaActividades from "./components/ListaActividades";
 import HeaderClase from "./components/HeaderClase";
-import ObjetivosCard from "./components/ObjetivosCard";
+import ObjetivoCard from "./components/ObjetivoCard";
+import ContenidoClase from "./components/ContenidoClase";
 import ActividadItem from "./components/ActividadItem";
-import "./index.css";
+import EvaluacionForm from "./components/EvaluacionForm";
+import ActividadesNocoDB from "./components/ActividadesNocoDB.jsx";
+import Footer from "./components/Footer";
+
+import { obtenerEvaluaciones } from "./services/api";
+
+import "./App.css";
 
 function App() {
-  const indicadores = [
-    "Identifica la estructura de un componente en React.",
-    "Utiliza props para enviar información.",
-    "Implementa useState para actualizar una actividad."
-  ];
+  const [evaluaciones, setEvaluaciones] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
 
-  const actividades = [
-    "Leer el ejemplo de componentes.",
-    "Identificar las props del encabezado.",
-    "Marcar la actividad cuando esté terminada."
-  ];
+  async function cargarEvaluaciones() {
+    try {
+      setError("");
+
+      const datos = await obtenerEvaluaciones();
+
+      setEvaluaciones(datos);
+    } catch (err) {
+      console.error(err);
+      setError("No fue posible cargar los registros.");
+    } finally {
+      setCargando(false);
+    }
+  }
+
+  useEffect(() => {
+    cargarEvaluaciones();
+  }, []);
 
   return (
-    <main className="contenedor">
+    <div className="app">
+      <HeaderClase />
 
-      <HeaderClase
-        titulo="Clase digital de Helen"
-        curso="Tecnología"
-        grado="Primero Básico"
-      />
+      <main className="contenedor">
+        <ObjetivoCard />
 
-      {/* Actividades obtenidas desde NocoDB */}
-      <ListaActividades />
+        <ContenidoClase />
 
-      <ObjetivosCard
-        competencia="Construye interfaces digitales mediante componentes reutilizables e interactivos."
-        indicadores={indicadores}
-      />
+        <ActividadItem />
 
-      <section className="actividades">
-        <h2>Actividades de aprendizaje</h2>
-        <p>
-          Marca cada actividad cuando la hayas terminado.
-        </p>
+        <ActividadesNocoDB />
 
-        {actividades.map((actividad, index) => (
-          <ActividadItem
-            key={index}
-            actividad={actividad}
-          />
-        ))}
-      </section>
+        <EvaluacionForm onGuardado={cargarEvaluaciones} />
 
-      <footer>
-        Proyecto Integrador · Fase 7 · React y NocoDB
-      </footer>
+        <section className="seccion" id="registros">
+          <div className="titulo-seccion">
+            <span className="subtitulo"></span>
+            <p>
 
-    </main>
+            </p>
+          </div>
+
+          <div className="registros-card">
+            {cargando ? (
+              <p>Cargando evaluaciones...</p>
+            ) : error ? (
+              <p className="error-texto">{error}</p>
+            ) : evaluaciones.length === 0 ? (
+              <p>
+                
+              </p>
+            ) : (
+              <>
+                <p className="total-registros">
+                  Total de registros: {evaluaciones.length}
+                </p>
+
+                <div className="tabla-contenedor">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Estudiante</th>
+                        <th>Grado</th>
+                        <th>Calificación</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {evaluaciones.map((item, index) => (
+                        <tr key={item.Id || index}>
+                          <td>{item.Nombre}</td>
+                          <td>{item.Grado}</td>
+                          <td>{item.Calificacion}/100</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
   );
 }
 
