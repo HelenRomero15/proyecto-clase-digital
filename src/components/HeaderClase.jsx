@@ -19,7 +19,7 @@ function HeaderClase() {
 
       <div className="hero-datos">
         <span>📚 Tecnología</span>
-        <span>🎓 Primero Básico</span>
+        <span>🎓 4t0 Bachillerato</span>
         <span>⏱️ 40 minutos</span>
       </div>
 

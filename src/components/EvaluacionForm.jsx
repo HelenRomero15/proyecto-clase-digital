@@ -4,7 +4,7 @@ import { guardarEvaluacion } from "../services/api";
 
 function EvaluacionForm() {
   const [nombre, setNombre] = useState("");
-  const [grado, setGrado] = useState("Primero Básico");
+  const [grado, setGrado] = useState("4to Bachillerato");
   const [respuesta1, setRespuesta1] = useState("");
   const [respuesta2, setRespuesta2] = useState("");
   const [respuesta3, setRespuesta3] = useState("");
